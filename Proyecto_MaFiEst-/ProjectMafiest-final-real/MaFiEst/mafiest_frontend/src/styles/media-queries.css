@@ -1,0 +1,15 @@
+@media (max-width: 1200px) {
+    /* Estilos para pantallas grandes */
+}
+
+@media (max-width: 992px) {
+    /* Estilos para pantallas medianas */
+}
+
+@media (max-width: 768px) {
+    /* Estilos para pantallas pequeñas */
+}
+
+@media (max-width: 576px) {
+    /* Estilos para pantallas extra pequeñas */
+}

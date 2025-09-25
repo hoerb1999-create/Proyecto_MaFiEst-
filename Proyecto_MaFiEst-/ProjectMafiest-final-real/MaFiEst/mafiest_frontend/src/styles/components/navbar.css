@@ -1,0 +1,87 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--navbar-height);
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.navbar .menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar .menu a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+.navbar .menu a:hover {
+    color: #1a73e8;
+}
+
+.navbar .user-info {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .user-info .username {
+    margin-right: 1rem;
+}
+
+.navbar .user-info .logout {
+    cursor: pointer;
+    color: white; /* Color del botón de cerrar sesión */
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: transparent;
+    transition: color 0.3s;
+}
+
+.navbar .user-info .logout:hover {
+    color: rgba(255, 255, 255, 0.7); /* Efecto hover en cerrar sesión */
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #1a73e8;
+    color: white !important;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid #1a73e8;
+    color: #1a73e8 !important;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}

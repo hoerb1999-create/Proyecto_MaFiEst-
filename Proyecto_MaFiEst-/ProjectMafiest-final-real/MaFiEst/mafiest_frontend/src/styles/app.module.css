@@ -1,0 +1,19 @@
+.appContainer {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 20px;
+  margin-left: 250px; /* Adjust based on your sidebar width */
+  background-color: var(--background-color);
+}
+
+/* Use compound selectors for better specificity */
+.mainContent > * {
+  max-width: 1200px;
+  margin: 0 auto;
+}

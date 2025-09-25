@@ -1,0 +1,46 @@
+/* Estilos específicos para el rol de docente */
+
+.teacher-dashboard {
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.teacher-upload-section {
+    margin-top: 20px;
+}
+
+.teacher-upload-button {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.teacher-upload-button:hover {
+    background-color: #45a049;
+}
+
+.teacher-course-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.teacher-course-item {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 15px;
+}
+
+.teacher-course-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.teacher-course-progress {
+    font-size: 14px;
+    color: #777;
+}
