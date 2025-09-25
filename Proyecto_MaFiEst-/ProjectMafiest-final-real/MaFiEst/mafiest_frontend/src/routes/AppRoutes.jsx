@@ -5,8 +5,8 @@ import { useAuth } from '../context/AuthContext';
 
 // Páginas públicas
 import Landing from '../pages/Landing';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
+import Login from '../pages/LoginForm';
+import Register from '../pages/RegisterForm';
 
 // Páginas protegidas generales
 import Contact from '../pages/Contact';
@@ -15,25 +15,23 @@ import Profile from '../pages/Profile';
 import Recordings from '../pages/Recordings';
 
 // Páginas de administrador
-import AdminDashboard from '../pages/admin/Dashboard';
-import ManageUsers from '../pages/admin/ManageUsers';
-import ManageGroups from '../pages/admin/ManageGroups';
+import AdminDashboard from '../pages/administrador/Dashboard';
+import ManageUsers from '../pages/administrador/ManageUsers';
+import ManageGroups from '../pages/administrador/ManageGroups';
 
 // Páginas de estudiante
-import StudentDashboard from '../pages/student/Dashboard';
-import ViewActivities from '../pages/student/ViewActivities';
-import SubmitActivity from '../pages/student/SubmitActivity';
-import ViewGrades from '../pages/student/ViewGrades';
-import ViewTracking from '../pages/student/ViewTracking';
+import StudentDashboard from '../pages/estudiante/Dashboard';
+import ViewActivities from '../pages/estudiante/ViewActivities';
+import SubmitActivity from '../pages/estudiante/SubmitActivity';
+import ViewSubmissions from '../pages/estudiante/ViewSubmissions';
 
 // Páginas de profesor
-import TeacherDashboard from '../pages/teacher/Dashboard';
-import UploadActivities from '../pages/teacher/UploadActivities';
-import GradeActivity from '../pages/teacher/GradeActivity';
-import TrackStudents from '../pages/teacher/TrackStudents';
+import TeacherDashboard from '../pages/docente/Dashboard';
+import ActivityManagement from '../pages/docente/ActivityManagement';
+import SubmissionReview from '../pages/docente/SubmissionReview';
 
 // Páginas de independiente
-import IndependentDashboard from '../pages/independent/Dashboard';
+import IndependentDashboard from '../pages/independiente/Dashboard';
 
 // Componente de ruta protegida
 import RutaProtegida from './RutaProtegida';
@@ -45,9 +43,9 @@ const AppRoutes = () => {
         if (!user) return '/login';
         switch (user.role) {
             case 'administrador': return '/admin/dashboard';
-            case 'docente': return '/teacher/dashboard';
-            case 'estudiante': return '/student/dashboard';
-            case 'independiente': return '/independent/dashboard';
+            case 'docente': return '/docente/dashboard';
+            case 'estudiante': return '/estudiante/dashboard';
+            case 'independiente': return '/independiente/dashboard';
             default: return '/login';
         }
     };
@@ -77,35 +75,40 @@ const AppRoutes = () => {
             } />
 
             {/* Rutas de estudiante */}
-            <Route path="/student/*" element={
+            <Route path="/estudiante/*" element={
                 <RutaProtegida allowedRoles={['estudiante']}>
                     <Routes>
                         <Route path="dashboard" element={<StudentDashboard />} />
                         <Route path="activities" element={<ViewActivities />} />
-                        <Route path="submit-activity/:id" element={<SubmitActivity />} />
-                        <Route path="grades" element={<ViewGrades />} />
-                        <Route path="tracking" element={<ViewTracking />} />
+                        <Route path="activities/:id" element={<SubmitActivity />} />
+                        <Route path="submissions" element={<ViewSubmissions />} />
+                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="advisories" element={<Advisory />} />
                     </Routes>
                 </RutaProtegida>
             } />
 
-            {/* Rutas de profesor */}
-            <Route path="/teacher/*" element={
+            {/* Rutas de docente */}
+            <Route path="/docente/*" element={
                 <RutaProtegida allowedRoles={['docente']}>
                     <Routes>
                         <Route path="dashboard" element={<TeacherDashboard />} />
-                        <Route path="activities/upload" element={<UploadActivities />} />
-                        <Route path="activities/grade/:id" element={<GradeActivity />} />
-                        <Route path="track-students" element={<TrackStudents />} />
+                        <Route path="activities" element={<ActivityManagement />} />
+                        <Route path="submissions" element={<SubmissionReview />} />
+                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="advisories" element={<Advisory />} />
                     </Routes>
                 </RutaProtegida>
             } />
 
             {/* Rutas de independiente */}
-            <Route path="/independent/*" element={
+            <Route path="/independiente/*" element={
                 <RutaProtegida allowedRoles={['independiente']}>
                     <Routes>
                         <Route path="dashboard" element={<IndependentDashboard />} />
+                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="advisories" element={<Advisory />} />
+                        <Route path="contact" element={<Contact />} />
                     </Routes>
                 </RutaProtegida>
             } />

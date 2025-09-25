@@ -1,101 +1,56 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User } = require("../models").models;
+const userService = require('../services/userService');
+const independentService = require('../services/independentService');
+const { AppError } = require('../utils/errorHandler');
 
 const authController = {
-  // Registro de usuarios independientes
-  async register(req, res) {
-    try {
-      const { name, email, password } = req.body;
+    async register(req, res, next) {
+        try {
+            const { username, email, password } = req.body;
 
-      // Verificar si el usuario ya existe
-      const existingUser = await User.findOne({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ message: "El email ya está registrado" });
-      }
+            if (!username || !email || !password) {
+                throw new AppError('All fields are required', 400);
+            }
 
-      // Crear nuevo usuario
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const user = await User.create({
-        name,
-        email,
-        password: hashedPassword,
-        role: 'estudiante'
-      });
+            const user = await independentService.register({
+                username,
+                email,
+                password
+            });
 
-      res.status(201).json({
-        message: "Usuario registrado exitosamente",
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role
+            res.status(201).json({
+                message: 'User registered successfully',
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }
+            });
+        } catch (error) {
+            next(error);
         }
-      });
-    } catch (error) {
-      console.error("Register error:", error);
-      res.status(500).json({ message: "Error en el servidor" });
-    }
-  },
+    },
 
-  // Inicio de sesión
-  async login(req, res) {
-    console.log("[LOGIN] Solicitud recibida");
-    try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        console.log("[LOGIN] Faltan credenciales");
-        return res.status(400).json({ message: "Email y contraseña requeridos" });
-      }
+    async login(req, res, next) {
+        try {
+            const { email, password } = req.body;
 
-      const user = await User.findOne({ where: { email } });
-      if (!user) {
-        console.log("[LOGIN] Usuario no encontrado");
-        return res.status(401).json({ message: "Credenciales inválidas" });
-      }
+            if (!email || !password) {
+                throw new AppError('Email and password are required', 400);
+            }
 
-      // bcrypt.compare puede quedarse colgado si el hash es inválido, por eso log previo
-      console.log("[LOGIN] Usuario encontrado, verificando contraseña...");
-      const validPassword = await bcrypt.compare(password, user.password);
-      if (!validPassword) {
-        console.log("[LOGIN] Contraseña incorrecta");
-        return res.status(401).json({ message: "Credenciales inválidas" });
-      }
+            const result = await userService.login(email, password);
 
-      // Generar token JWT
-      console.log("[LOGIN] Contraseña válida, generando token...");
-      let token;
-      try {
-        token = jwt.sign(
-          { id: user.id, email: user.email, role: user.role },
-          process.env.JWT_SECRET || "devsecret",
-          { expiresIn: "1h" }
-        );
-      } catch (err) {
-        console.error("[LOGIN] Error generando token:", err);
-        return res.status(500).json({ message: "Error generando token" });
-      }
-
-      console.log("[LOGIN] Login exitoso, enviando respuesta");
-      return res.json({
-        token,
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role
+            res.json(result);
+        } catch (error) {
+            next(error);
         }
-      });
-    } catch (error) {
-      console.error("[LOGIN] Error inesperado:", error);
-      return res.status(500).json({ message: "Error en el servidor" });
-    }
-  },
+    },
 
-  // Cierre de sesión
-  logout(req, res) {
-    res.json({ message: "Sesión cerrada exitosamente" });
-  }
+    logout(req, res) {
+        // Token is handled client-side
+        res.json({ message: 'Session successfully closed' });
+    }
 };
 
 module.exports = authController;

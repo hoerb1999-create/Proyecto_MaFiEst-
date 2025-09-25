@@ -39,7 +39,7 @@ const Sidebar = ({ role: roleProp }) => {
           >
             <div className="user-avatar">{initials(user?.name || 'U')}</div>
             <div className="user-info">
-              <span className="user-name">{user?.name || 'Invitado'}</span>
+              <span className="user-name">{user?.name || 'Guest'}</span>
               <span className="user-role">{role || '—'}</span>
             </div>
             <span className="chev">{open ? '▴' : '▾'}</span>
@@ -48,7 +48,7 @@ const Sidebar = ({ role: roleProp }) => {
           {open && (
             <div className="user-dropdown" role="menu">
               <Link to="/profile" className="dropdown-item" onClick={() => setOpen(false)}>
-                Ver perfil
+                View Profile
               </Link>
               <button
                 className="dropdown-item logout"
@@ -57,7 +57,7 @@ const Sidebar = ({ role: roleProp }) => {
                   logout && logout();
                 }}
               >
-                Cerrar sesión
+                Logout
               </button>
             </div>
           )}
@@ -69,31 +69,34 @@ const Sidebar = ({ role: roleProp }) => {
           {role === 'administrador' && (
             <>
               <li><Link to="/admin/dashboard">Dashboard</Link></li>
-              <li><Link to="/admin/manage-users">Manejo de Usuarios</Link></li>
-              <li><Link to="/admin/manage-groups">Manejo de Grupos</Link></li>
+              <li><Link to="/admin/manage-users">Manage Users</Link></li>
+              <li><Link to="/admin/manage-groups">Manage Groups</Link></li>
             </>
           )}
           {role === 'docente' && (
             <>
-              <li><Link to="/teacher/dashboard">Dashboard</Link></li>
-              <li><Link to="/teacher/upload-exams">Upload Exams</Link></li>
-              <li><Link to="/teacher/upload-workshops">Upload Workshops</Link></li>
+              <li><Link to="/docente/dashboard">Dashboard</Link></li>
+              <li><Link to="/docente/activities">Actividades</Link></li>
+              <li><Link to="/docente/submissions">Entregas</Link></li>
+              <li><Link to="/docente/recordings">Grabaciones</Link></li>
+              <li><Link to="/docente/advisories">Asesorías</Link></li>
             </>
           )}
           {role === 'estudiante' && (
             <>
-              <li><Link to="/student/dashboard">Dashboard</Link></li>
-              <li><Link to="/student/courses">Cursos</Link></li>
-              <li><Link to="/student/progress">Progreso</Link></li>
-              <li><Link to="/student/achievements">Mis Logros</Link></li>
+              <li><Link to="/estudiante/dashboard">Dashboard</Link></li>
+              <li><Link to="/estudiante/activities">Actividades</Link></li>
+              <li><Link to="/estudiante/submissions">Mis Entregas</Link></li>
+              <li><Link to="/estudiante/recordings">Grabaciones</Link></li>
+              <li><Link to="/estudiante/advisories">Asesorías</Link></li>
             </>
           )}
           {role === 'independiente' && (
             <>
-              <li><Link to="/independent/dashboard">Dashboard</Link></li>
-              <li><Link to="/independent/courses">Cursos</Link></li>
-              <li><Link to="/independent/progress">Progreso</Link></li>
-              <li><Link to="/independent/achievements">Mis Logros</Link></li>
+              <li><Link to="/independiente/dashboard">Dashboard</Link></li>
+              <li><Link to="/independiente/recordings">Grabaciones</Link></li>
+              <li><Link to="/independiente/advisories">Asesorías</Link></li>
+              <li><Link to="/independiente/contact">Contacto</Link></li>
             </>
           )}
         </ul>

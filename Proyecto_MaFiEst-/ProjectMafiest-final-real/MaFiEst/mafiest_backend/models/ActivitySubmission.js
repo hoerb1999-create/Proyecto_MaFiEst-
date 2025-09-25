@@ -17,11 +17,11 @@ ActivitySubmission.init({
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  content: {
+  description: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  fileUrl: {
+  driveLink: {
     type: DataTypes.STRING,
     allowNull: true,
     validate: {
@@ -29,17 +29,17 @@ ActivitySubmission.init({
     }
   },
   status: {
-    type: DataTypes.ENUM('submitted', 'graded'),
-    defaultValue: 'submitted',
+    type: DataTypes.ENUM('pending', 'reviewed', 'approved', 'rejected'),
+    defaultValue: 'pending',
     allowNull: false
   },
-  submittedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+  grade: {
+    type: DataTypes.FLOAT,
+    allowNull: true
   },
-  lastModifiedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
+  comment: {
+    type: DataTypes.TEXT,
+    allowNull: true
   }
 }, {
   sequelize,

@@ -15,20 +15,20 @@ const LoginForm = () => {
       const data = await apiLogin(creds);
       authLogin(data.user, data.token); // asegúrate que AuthContext tiene esta firma
     } catch (err) {
-      setError(err.message || 'Error al iniciar sesión');
+      setError(err.message || 'Login error');
     }
   };
 
   return (
     <div className="auth-card">
-      <h3>Iniciar Sesión</h3>
+      <h3>Login</h3>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <label>Email</label>
         <input name="email" type="email" required />
-        <label>Contraseña</label>
+        <label>Password</label>
         <input name="password" type="password" required />
-        <button type="submit" className="btn">Entrar</button>
+        <button type="submit" className="btn">Enter</button>
       </form>
     </div>
   );

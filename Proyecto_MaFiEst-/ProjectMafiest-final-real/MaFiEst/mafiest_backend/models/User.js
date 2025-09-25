@@ -9,9 +9,13 @@ User.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
+  username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
+    validate: {
+      len: [3, 30]
+    }
   },
   email: {
     type: DataTypes.STRING,
@@ -28,6 +32,12 @@ User.init({
   role: {
     type: DataTypes.ENUM('administrador', 'docente', 'estudiante', 'independiente'),
     allowNull: false,
+  },
+  groupId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: null,
+    comment: 'Solo para docente y estudiante'
   },
   createdAt: {
     type: DataTypes.DATE,

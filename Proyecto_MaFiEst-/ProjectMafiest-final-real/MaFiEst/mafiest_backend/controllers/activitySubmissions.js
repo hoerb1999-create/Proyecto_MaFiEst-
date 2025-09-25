@@ -1,4 +1,4 @@
-const { ActivitySubmission, Activity, User, ActivityResult } = require("../models");
+const { ActivitySubmission, Activity, User } = require("../models");
 const { Op, Sequelize: sequelize } = require("sequelize");
 
 const activitySubmissionController = {
@@ -26,10 +26,10 @@ const activitySubmissionController = {
         where.activityId = activityId;
       }
 
-      if (req.user.role === "estudiante") {
+      if (req.user.role === "student") {
         where.studentId = req.user.id;
       } else if (req.user.role === "docente") {
-        // Profesores solo ven entregas de sus actividades
+        // Docentes solo ven entregas de sus actividades
         where['$Activity.teacherId$'] = req.user.id;
       }
 
@@ -258,7 +258,7 @@ const activitySubmissionController = {
       
       const where = activityId ? { activityId } : {};
 
-      if (req.user.role === "teacher") {
+      if (req.user.role === "docente") {
         where['$Activity.teacherId$'] = req.user.id;
       }
 

@@ -21,7 +21,7 @@ export const login = async (credentials) => {
     const status = error.response?.status;
     const body = error.response?.data;
     console.error('Login error status:', status, 'message:', body?.message || error.message);
-    throw body || { message: error.message || 'Error de conexión' };
+    throw body || { message: error.message || 'Connection error' };
   }
 };
 
@@ -32,7 +32,7 @@ export const register = async (userData) => {
   } catch (error) {
     const body = error.response?.data;
     console.error('Register error:', body?.message || error.message);
-    throw body || { message: error.message || 'Error de registro' };
+    throw body || { message: error.message || 'Registration error' };
   }
 };
 

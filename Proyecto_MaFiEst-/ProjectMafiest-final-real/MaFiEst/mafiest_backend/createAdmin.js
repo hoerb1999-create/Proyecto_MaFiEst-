@@ -10,7 +10,7 @@ const User = require('./models/User');
     console.log('✔ Tablas sincronizadas correctamente');
 
     // Verificar si ya existe un administrador
-    const existingAdmin = await User.findOne({ where: { role: 'administrador' } });
+  const existingAdmin = await User.findOne({ where: { role: 'administrador' } });
     if (existingAdmin) {
       console.log('⚠ Ya existe un administrador:', existingAdmin.email);
       process.exit(0);
@@ -22,7 +22,7 @@ const User = require('./models/User');
       name: 'Super Admin',
       email: 'admin@mafiest.com',
       password: hashedPassword,
-      role: 'administrador',
+  role: 'administrador',
     });
 
     console.log('✅ Administrador creado con éxito:', admin.email);

@@ -1,106 +1,83 @@
-const Recording = require('../models/Recording');
+const recordingService = require('../services/recordingService');
+const adminService = require('../services/adminService');
+const teacherService = require('../services/teacherService');
+const { AppError } = require('../utils/errorHandler');
 
-exports.createRecording = async (req, res) => {
-    try {
-        // Verificar que solo docentes y administradores puedan crear grabaciones
-        if (req.user.role !== 'docente' && req.user.role !== 'administrador') {
-            return res.status(403).json({ 
-                message: 'Solo los docentes y administradores pueden subir grabaciones' 
-            });
-        }
+const recordingsController = {
+    async createRecording(req, res, next) {
+        try {
+            const { title, description, driveLink, type } = req.body;
+            let recording;
 
-        const { title, description, driveLink, forIndependents } = req.body;
+            switch (req.user.role) {
+                case 'administrador':
+                    if (type !== 'general') {
+                        throw new AppError('Los administradores solo pueden crear grabaciones generales', 400);
+                    }
+                    recording = await adminService.createGeneralRecording({
+                        title, description, driveLink
+                    }, req.user.id);
+                    break;
 
-        // Si es docente, forzar forIndependents a false
-        const recording = new Recording({
-            title,
-            description,
-            driveLink,
-            createdById: req.user.id,
-            // Solo los administradores pueden crear grabaciones para independientes
-            forIndependents: req.user.role === 'administrador' ? forIndependents : false
-        });
-        
-        await recording.save();
-        res.status(201).json(recording);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+                case 'docente':
+                    if (type !== 'general') {
+                        throw new AppError('Los docentes solo pueden crear grabaciones generales', 400);
+                    }
+                    recording = await teacherService.createRecording({
+                        title, description, driveLink
+                    }, req.user.id);
+                    break;
 
-exports.getRecordings = async (req, res) => {
-    try {
-        let query = {};
-        if (req.user.role === 'independiente') {
-            query.forIndependents = true;
-        } else if (req.user.role === 'estudiante') {
-            query.forIndependents = false;
-        }
-        const recordings = await Recording.find(query);
-        res.json(recordings);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-exports.updateRecording = async (req, res) => {
-    try {
-        const recording = await Recording.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true }
-        );
-        if (!recording) {
-            return res.status(404).json({ message: 'Grabación no encontrada' });
-        }
-        res.json(recording);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-exports.deleteRecording = async (req, res) => {
-    try {
-        // Primero buscamos la grabación
-        const recording = await Recording.findById(req.params.id);
-        
-        if (!recording) {
-            return res.status(404).json({ 
-                success: false,
-                message: 'Grabación no encontrada' 
-            });
-        }
-
-        // Verificar permisos
-        if (recording.forIndependents) {
-            // Solo administradores pueden eliminar grabaciones para independientes
-            if (req.user.role !== 'admin') {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Solo los administradores pueden eliminar grabaciones para independientes'
-                });
+                default:
+                    throw new AppError('Not authorized to create recordings', 403);
             }
-        } else {
-            // Para grabaciones de estudiantes
-            if (req.user.role !== 'admin' && req.user.id !== recording.createdBy.toString()) {
-                return res.status(403).json({
-                    success: false,
-                    message: 'Solo el docente que creó la grabación o un administrador pueden eliminarla'
-                });
-            }
+
+            res.status(201).json(recording);
+        } catch (error) {
+            next(error);
         }
+    },
 
-        // Si llegamos aquí, tiene permisos para eliminar
-        await Recording.findByIdAndDelete(req.params.id);
+    async getRecordings(req, res, next) {
+        try {
+            const recordings = await recordingService.getAccessibleRecordings(req.user.id);
+            res.json(recordings);
+        } catch (error) {
+            next(error);
+        }
+    },
 
-        res.json({
-            success: true,
-            message: 'Grabación eliminada exitosamente'
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+    async getRecordingById(req, res, next) {
+        try {
+            const recording = await recordingService.getRecording(req.params.id, req.user.id);
+            res.json(recording);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async updateRecording(req, res, next) {
+        try {
+            const { title, description, driveLink } = req.body;
+            const recording = await recordingService.updateRecording(
+                req.params.id,
+                { title, description, driveLink },
+                req.user.id
+            );
+            res.json(recording);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async deleteRecording(req, res, next) {
+        try {
+            await recordingService.deleteRecording(req.params.id, req.user.id);
+            res.status(204).end();
+        } catch (error) {
+            next(error);
+        }
     }
 };
+
+module.exports = recordingsController;

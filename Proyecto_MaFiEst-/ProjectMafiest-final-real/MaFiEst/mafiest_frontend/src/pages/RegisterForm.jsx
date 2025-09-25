@@ -12,27 +12,27 @@ const RegisterForm = () => {
 
     try {
       const data = await apiRegister(user);
-      setMsg(data.message || 'Registrado correctamente. Inicia sesión.');
+      setMsg(data.message || 'Successfully registered. Please login.');
       setError(null);
     } catch (err) {
-      setError(err.message || 'Error al registrar');
+      setError(err.message || 'Registration error');
       setMsg(null);
     }
   };
 
   return (
     <div className="auth-card">
-      <h3>Registrarse</h3>
+      <h3>Register</h3>
       {msg && <div className="success">{msg}</div>}
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <label>Nombre</label>
+        <label>Name</label>
         <input name="name" type="text" required />
         <label>Email</label>
         <input name="email" type="email" required />
-        <label>Contraseña</label>
+        <label>Password</label>
         <input name="password" type="password" required />
-        <button type="submit" className="btn">Crear cuenta</button>
+        <button type="submit" className="btn">Create account</button>
       </form>
     </div>
   );

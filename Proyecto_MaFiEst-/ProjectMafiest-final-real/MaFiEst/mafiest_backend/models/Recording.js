@@ -3,6 +3,7 @@ const sequelize = require('../utils/db');
 
 class Recording extends Model {}
 
+
 Recording.init({
     id: {
         type: DataTypes.INTEGER,
@@ -24,26 +25,22 @@ Recording.init({
             isUrl: true
         }
     },
-    imageUrl: {
-        type: DataTypes.STRING(255),
-        allowNull: true
+    type: {
+        type: DataTypes.ENUM('general'),
+        allowNull: false
     },
-    createdById: {
+    userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'Users',
             key: 'id'
         }
-    },
-    forIndependents: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
     }
 }, {
     sequelize,
     modelName: 'Recording',
-    tableName: 'recordings',
+    tableName: 'Recordings',
     timestamps: true
 });
 

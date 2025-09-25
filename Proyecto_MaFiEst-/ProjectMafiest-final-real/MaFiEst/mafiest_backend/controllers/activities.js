@@ -1,181 +1,94 @@
-const Activity = require("../models/Activity");
-const { Group, User, ActivitySubmission, ActivityResult } = require("../models");
-const { Op } = require("sequelize");
+const activityService = require('../services/activityService');
+const teacherService = require('../services/teacherService');
+const studentService = require('../services/studentService');
+const { AppError } = require('../utils/errorHandler');
 
 const activityController = {
-  // Obtener actividades según el rol y grupo del usuario
-  async getActivities(req, res) {
-    try {
-      let activities;
-      const include = [
-        {
-          model: User,
-          as: 'teacher',
-          attributes: ['id', 'name']
-        },
-        {
-          model: Group,
-          attributes: ['id', 'name']
-        }
-      ];
-
-      if (req.user.role === 'estudiante') {
-        // Estudiantes solo ven actividades de sus grupos
-        activities = await Activity.findAll({
-          include,
-          where: {
-            groupId: {
-              [Op.in]: req.user.groups.map(g => g.id)
-            },
-            status: 'active'
-          }
-        });
-      } else if (req.user.role === 'docente') {
-        // Profesores ven sus propias actividades
-        activities = await Activity.findAll({
-          include,
-          where: {
-            teacherId: req.user.id
-          }
-        });
-      } else {
-        // Administradores ven todas
-        activities = await Activity.findAll({ include });
-      }
-
-      // Agregar información de entregas para profesores
-      if (req.user.role === 'docente') {
-        activities = await Promise.all(activities.map(async (activity) => {
-          const submissions = await ActivitySubmission.count({
-            where: { activityId: activity.id }
-          });
-          const graded = await ActivityResult.count({
-            where: { 
-              submissionId: {
-                [Op.in]: (await ActivitySubmission.findAll({
-                  where: { activityId: activity.id },
-                  attributes: ['id']
-                })).map(s => s.id)
-              }
+    async getActivities(req, res, next) {
+        try {
+            let activities;
+            
+            switch (req.user.role) {
+                case 'docente':
+                    activities = await teacherService.getGroupActivities(req.user.id);
+                    break;
+                case 'estudiante':
+                    activities = await studentService.getAvailableActivities(req.user.id);
+                    break;
+                case 'administrador':
+                    activities = await activityService.getActivitiesByGroup(req.user.groupId);
+                    break;
+                default:
+                    throw new AppError('No está autorizado para ver las actividades', 403);
             }
-          });
-          return {
-            ...activity.toJSON(),
-            submissionsCount: submissions,
-            gradedCount: graded
-          };
-        }));
-      }
 
-      res.json({
-        success: true,
-        data: activities
-      });
-    } catch (error) {
-      res.status(500).json({ 
-        success: false, 
-        error: "Error al obtener actividades",
-        message: error.message 
-      });
-    }
-  },
-
-  async getActivityById(req, res) {
-    try {
-      const activity = await Activity.findByPk(req.params.id);
-      if (!activity) return res.status(404).json({ error: "Actividad no encontrada" });
-      res.json(activity);
-    } catch (error) {
-      res.status(500).json({ error: "Error al obtener la actividad" });
-    }
-  },
-
-  async createActivity(req, res) {
-    try {
-      if (req.user.role !== "docente" && req.user.role !== "administrador") {
-        return res.status(403).json({ 
-          success: false,
-          error: "No autorizado para crear actividades" 
-        });
-      }
-
-      // Validar que el grupo existe y el profesor pertenece a él
-      const group = await Group.findByPk(req.body.groupId);
-      if (!group) {
-        return res.status(404).json({ 
-          success: false,
-          error: "Grupo no encontrado" 
-        });
-      }
-
-      if (req.user.role === "docente") {
-        const isTeacherInGroup = await group.hasDocente(req.user.id);
-        if (!isTeacherInGroup) {
-          return res.status(403).json({ 
-            success: false,
-            error: "No eres profesor de este grupo" 
-          });
+            res.json(activities);
+        } catch (error) {
+            next(error);
         }
-      }
+    },
 
-      const activity = await Activity.create({
-        ...req.body,
-        teacherId: req.user.id,
-        status: 'active'
-      });
+    async getActivityById(req, res, next) {
+        try {
+            const activity = await activityService.getActivity(req.params.id);
+            if (req.user.role === 'estudiante' && activity.groupId !== req.user.groupId) {
+                throw new AppError('No tienes acceso a esta actividad', 403);
+            }
+            res.json(activity);
+        } catch (error) {
+            next(error);
+        }
+    },
 
-      res.status(201).json({
-        success: true,
-        message: "Actividad creada exitosamente",
-        data: activity
-      });
-    } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-        return res.status(400).json({
-          success: false,
-          error: "Error de validación",
-          errors: error.errors.map(e => e.message)
-        });
-      }
-      res.status(500).json({ 
-        success: false,
-        error: "Error al crear la actividad",
-        message: error.message 
-      });
+    async createActivity(req, res, next) {
+        try {
+            if (req.user.role !== 'docente') {
+                throw new AppError('Solo los docentes pueden crear actividades', 403);
+            }
+
+            const { title, description, deadline } = req.body;
+            const activity = await teacherService.createActivity(
+                { title, description, deadline },
+                req.user.id
+            );
+
+            res.status(201).json(activity);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async updateActivity(req, res, next) {
+        try {
+            if (req.user.role !== 'docente') {
+                throw new AppError('Solo los docentes pueden actualizar actividades', 403);
+            }
+
+            const { title, description, deadline } = req.body;
+            const activity = await activityService.updateActivity(
+                req.params.id,
+                { title, description, deadline },
+                req.user.id
+            );
+
+            res.json(activity);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async deleteActivity(req, res, next) {
+        try {
+            if (req.user.role !== 'docente') {
+                throw new AppError('Solo los docentes pueden eliminar actividades', 403);
+            }
+
+            await activityService.deleteActivity(req.params.id, req.user.id);
+            res.status(204).end();
+        } catch (error) {
+            next(error);
+        }
     }
-  },
-
-  async updateActivity(req, res) {
-    try {
-      if (req.user.role !== "docente" && req.user.role !== "administrador") {
-        return res.status(403).json({ error: "No autorizado para actualizar actividades" });
-      }
-
-      const activity = await Activity.findByPk(req.params.id);
-      if (!activity) return res.status(404).json({ error: "Actividad no encontrada" });
-
-      await activity.update(req.body);
-      res.json(activity);
-    } catch (error) {
-      res.status(500).json({ error: "Error al actualizar la actividad" });
-    }
-  },
-
-  async deleteActivity(req, res) {
-    try {
-      if (req.user.role !== "docente" && req.user.role !== "administrador") {
-        return res.status(403).json({ error: "No autorizado para eliminar actividades" });
-      }
-
-      const activity = await Activity.findByPk(req.params.id);
-      if (!activity) return res.status(404).json({ error: "Actividad no encontrada" });
-
-      await activity.destroy();
-      res.json({ message: "Actividad eliminada" });
-    } catch (error) {
-      res.status(500).json({ error: "Error al eliminar la actividad" });
-    }
-  },
 };
 
 module.exports = activityController;
