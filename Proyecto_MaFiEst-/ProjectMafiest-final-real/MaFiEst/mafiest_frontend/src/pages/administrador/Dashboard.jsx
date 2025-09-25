@@ -8,10 +8,10 @@ const Dashboard = () => {
             <h1>Panel de Control del Administrador</h1>
             <div className="dashboard-links">
                 <Link to="/admin/manage-users" className="dashboard-link">Gestionar Usuarios</Link>
-                <Link to="/admin/manage-groups" className="dashboard-link">Gestionar Grupos</Link>
             </div>
         </div>
     );
 };
 
 export default Dashboard;
+
