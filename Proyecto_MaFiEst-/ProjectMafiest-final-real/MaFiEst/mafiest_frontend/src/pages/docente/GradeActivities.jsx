@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Button, Form, Modal, Table } from 'react-bootstrap';
+import { Container, Card, Button, Form, Table } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
-import userService from '../../services/userService';
+import activityService from '../../services/activityService';
 
 const GradeActivities = () => {
   const { user } = useAuth();
-  const [submissions, setSubmissions] = useState([]);
-  const [showGradeModal, setShowGradeModal] = useState(false);
+  const [activities, setActivities] = useState([]);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [gradeForm, setGradeForm] = useState({
-    nota: '',
-    feedback: ''
+    status: '',
+    teacherComment: ''
   });
 
   useEffect(() => {
-    if (user?.groupId) {
-      fetchSubmissions();
-    }
-  }, [user]);
+    loadActivities();
+  }, []);
 
   const fetchSubmissions = async () => {
     try {

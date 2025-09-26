@@ -15,11 +15,11 @@ const ActivitySubmission = () => {
 
   useEffect(() => {
     fetchActivities();
-  }, [user]);
+  }, []);
 
   const fetchActivities = async () => {
     try {
-      const data = await activitySubmissionService.getStudentActivities(user.groupId);
+      const data = await activityService.getActivities();
       setActivities(data);
     } catch (error) {
       console.error('Error al cargar actividades:', error);
@@ -35,12 +35,9 @@ const ActivitySubmission = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('solucion', submission.solucion);
-      if (submission.archivo) {
-        formData.append('archivo', submission.archivo);
-      }
+      formData.append('file', submission.archivo || submission.solucion);
 
-      await activitySubmissionService.submitActivity(selectedActivity.id, formData);
+      await activityService.submitActivity(selectedActivity.id, formData);
       setShowSubmitModal(false);
       setSubmission({ solucion: '', archivo: null });
       fetchActivities(); // Recargar actividades para ver la actualización
@@ -65,32 +62,33 @@ const ActivitySubmission = () => {
           <div key={activity.id} className="col-md-6 col-lg-4">
             <Card>
               <Card.Body>
-                <Card.Title>{activity.titulo}</Card.Title>
-                <Card.Text>{activity.descripcion}</Card.Text>
+                <Card.Title>{activity.title}</Card.Title>
+                <Card.Text>{activity.description}</Card.Text>
+                <Card.Text>
+                  <small className="text-muted">
+                    Fecha límite: {new Date(activity.dueDate).toLocaleDateString()}
+                  </small>
+                </Card.Text>
                 
-                {activity.submission ? (
+                {activity.Submissions?.length > 0 ? (
                   <div>
-                    <h6>Tu envío:</h6>
-                    <p>{activity.submission.solucion}</p>
-                    {activity.submission.archivo && (
-                      <a href={activity.submission.archivo} target="_blank" rel="noopener noreferrer">
-                        Ver archivo adjunto
+                    <h6>Estado de la entrega:</h6>
+                    <p>Estado: {activity.Submissions[0].status}</p>
+                    {activity.Submissions[0].file && (
+                      <a href={activity.Submissions[0].file} target="_blank" rel="noopener noreferrer">
+                        Ver entrega
                       </a>
                     )}
-                    {activity.submission.nota && (
+                    {activity.Submissions[0].teacherComment && (
                       <div className="mt-2">
-                        <strong>Nota: </strong>{activity.submission.nota}
-                      </div>
-                    )}
-                    {activity.submission.feedback && (
-                      <div className="mt-2">
-                        <strong>Feedback: </strong>{activity.submission.feedback}
+                        <strong>Comentario del docente: </strong>
+                        {activity.Submissions[0].teacherComment}
                       </div>
                     )}
                   </div>
                 ) : (
                   <Button variant="primary" onClick={() => handleSubmitModal(activity)}>
-                    Enviar Solución
+                    Enviar Entrega
                   </Button>
                 )}
               </Card.Body>
@@ -101,23 +99,24 @@ const ActivitySubmission = () => {
 
       <Modal show={showSubmitModal} onHide={() => setShowSubmitModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Enviar Solución</Modal.Title>
+          <Modal.Title>Enviar Entrega</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Tu solución</Form.Label>
+              <Form.Label>URL o texto de la entrega</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
                 value={submission.solucion}
                 onChange={(e) => setSubmission(prev => ({ ...prev, solucion: e.target.value }))}
-                required
+                placeholder="Ingresa la URL o texto de tu entrega"
+                required={!submission.archivo}
               />
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Archivo (opcional)</Form.Label>
+              <Form.Label>O sube un archivo</Form.Label>
               <Form.Control
                 type="file"
                 onChange={handleFileChange}

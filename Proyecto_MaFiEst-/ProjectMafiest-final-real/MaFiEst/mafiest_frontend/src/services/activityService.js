@@ -1,89 +1,54 @@
-const { Activity, User } = require('../models');
+import axios from 'axios';
 
-class ActivityService {
-    async createActivity(activityData) {
-        const { titulo, descripcion, docenteId, groupId, fechaLimite } = activityData;
+const API_URL = '/api/activities';
 
-        const docente = await User.findOne({
-            where: { 
-                id: docenteId,
-                rol: 'Docente',
-                groupId
-            }
-        });
+const activityService = {
+    // Obtener todas las actividades del grupo del usuario
+    getActivities: async () => {
+        const response = await axios.get(API_URL);
+        return response.data;
+    },
 
-        if (!docente) {
-            throw new Error('Docente no encontrado o no autorizado para este grupo');
-        }
+    // Crear una nueva actividad (solo docentes)
+    createActivity: async (activityData) => {
+        const response = await axios.post(API_URL, activityData);
+        return response.data;
+    },
 
-        return await Activity.create({
-            titulo,
-            descripcion,
-            docenteId,
-            groupId,
-            fechaLimite
-        });
+    // Enviar una entrega (solo estudiantes)
+    submitActivity: async (activityId, submissionData) => {
+        const response = await axios.post(`${API_URL}/${activityId}/submit`, submissionData);
+        return response.data;
+    },
+
+    // Calificar una entrega (solo docentes)
+    gradeSubmission: async (submissionId, gradeData) => {
+        const response = await axios.put(`${API_URL}/submissions/${submissionId}/grade`, gradeData);
+        return response.data;
+    },
+
+    // Obtener detalles de una entrega
+    getSubmissionDetails: async (submissionId) => {
+        const response = await axios.get(`${API_URL}/submissions/${submissionId}`);
+        return response.data;
+    },
+
+    // Actualizar una actividad
+    updateActivity: async (activityId, activityData) => {
+        const response = await axios.put(`${API_URL}/${activityId}`, activityData);
+        return response.data;
+    },
+
+    // Eliminar una actividad
+    deleteActivity: async (activityId) => {
+        await axios.delete(`${API_URL}/${activityId}`);
+    },
+
+    // Obtener actividades por grupo
+    getActivitiesByGroup: async (groupId) => {
+        const response = await axios.get(`${API_URL}/group/${groupId}`);
+        return response.data;
     }
+};
 
-    async getActivity(activityId) {
-        const activity = await Activity.findByPk(activityId, {
-            include: [{
-                model: User,
-                attributes: ['nombreUsuario'],
-                as: 'docente'
-            }]
-        });
-
-        if (!activity) {
-            throw new Error('Actividad no encontrada');
-        }
-
-        return activity;
-    }
-
-    async updateActivity(activityId, updateData, docenteId) {
-        const activity = await Activity.findOne({
-            where: {
-                id: activityId,
-                docenteId
-            }
-        });
-
-        if (!activity) {
-            throw new Error('Actividad no encontrada o no autorizada');
-        }
-
-        await activity.update(updateData);
-        return activity;
-    }
-
-    async deleteActivity(activityId, docenteId) {
-        const activity = await Activity.findOne({
-            where: {
-                id: activityId,
-                docenteId
-            }
-        });
-
-        if (!activity) {
-            throw new Error('Actividad no encontrada o no autorizada');
-        }
-
-        await activity.destroy();
-        return { message: 'Actividad eliminada correctamente' };
-    }
-
-    async getActivitiesByGroup(groupId) {
-        return await Activity.findAll({
-            where: { groupId },
-            include: [{
-                model: User,
-                attributes: ['nombreUsuario'],
-                as: 'docente'
-            }],
-            order: [['fechaLimite', 'DESC']]
-        });
-    }
-}
-
-module.exports = new ActivityService();
+export default activityService;

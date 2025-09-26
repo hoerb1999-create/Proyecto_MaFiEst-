@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const activitiesController = require('../controllers/activities');
-const { tokenExtractor, userExtractor } = require('../utils/middleware');
+const { authenticateToken } = require('../utils/middleware');
 
+// Todas las rutas requieren autenticación
+router.use(authenticateToken);
+
+// Middleware para verificar roles
 const allowRoles = (roles) => {
     return (req, res, next) => {
         if (!req.user) {

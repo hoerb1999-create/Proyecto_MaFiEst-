@@ -10,12 +10,19 @@ Activity.init({
     autoIncrement: true
   },
   title: {
-    type: DataTypes.STRING(100),
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: false
+  },
+  dueDate: {
+    type: DataTypes.DATE,
+    allowNull: false
   },
   teacherId: {
     type: DataTypes.INTEGER,
@@ -25,14 +32,13 @@ Activity.init({
       key: 'id'
     }
   },
-  deadline: {
-    type: DataTypes.DATE,
+  groupId: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 }, {
   sequelize,
   modelName: 'Activity',
-  tableName: 'Activities',
   timestamps: true
 });
 

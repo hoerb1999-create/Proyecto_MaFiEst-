@@ -4,7 +4,7 @@ const User = require('./User');
 const Contact = require('./Contact');
 const Advisory = require('./Advisory');
 const Activity = require('./Activity');
-const ActivitySubmission = require('./ActivitySubmission');
+const Submission = require('./Submission');
 const Recording = require('./Recording');
 
 // Relaciones principales
@@ -19,25 +19,24 @@ Contact.belongsTo(User, { foreignKey: 'usuarioId' });
 User.hasMany(Advisory, { foreignKey: 'usuarioId' });
 Advisory.belongsTo(User, { foreignKey: 'usuarioId' });
 
-// Actividades
-Activity.belongsTo(User, { foreignKey: 'teacherId' });
-User.hasMany(Activity, { foreignKey: 'teacherId' });
+// Relaciones entre Activity y Submission
+Activity.hasMany(Submission, { foreignKey: 'activityId' });
+Submission.belongsTo(Activity, { foreignKey: 'activityId' });
 
-// Entregas de actividades
-ActivitySubmission.belongsTo(User, { foreignKey: 'studentId' });
-ActivitySubmission.belongsTo(Activity, { foreignKey: 'activityId' });
-User.hasMany(ActivitySubmission, { foreignKey: 'studentId' });
-Activity.hasMany(ActivitySubmission, { foreignKey: 'activityId' });
+// Relaciones entre User y Activity
+User.hasMany(Activity, { foreignKey: 'teacherId' });
+Activity.belongsTo(User, { as: 'teacher', foreignKey: 'teacherId' });
+
+// Relaciones entre User y Submission
+User.hasMany(Submission, { foreignKey: 'studentId' });
+Submission.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
 
 module.exports = {
-    sequelize,
-    models: {
-        User,
-        Contact,
-        Advisory,
-        Activity,
-        ActivitySubmission,
-        Recording
-    }
+    User,
+    Contact,
+    Advisory,
+    Activity,
+    Submission,
+    Recording
 };
 
