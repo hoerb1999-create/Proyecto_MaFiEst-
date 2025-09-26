@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
-import recordingService from '../services/recordings';
+import recordingService from '../services/recordingService';
 
 const AddRecordingButton = () => {
   const { user } = useAuth();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Container, Row, Col } from 'react-bootstrap';
-import recordingService from '../../services/recordings';
+import recordingService from '../../services/recordingService';
 import AddRecordingButton from '../../components/AddRecordingButton';
 
 const Recordings = () => {

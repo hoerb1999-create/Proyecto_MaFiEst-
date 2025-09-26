@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Container, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
-import recordingService from '../../services/recordings';
+import recordingService from '../../services/recordingService';
 
 const Recordings = () => {
   const [groupRecordings, setGroupRecordings] = useState([]);
