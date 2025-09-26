@@ -33,6 +33,9 @@ const TeacherDashboard = () => {
                     <li>
                         <Link to="/docente/advisories">Asesorías</Link>
                     </li>
+                    <li>
+                        <Link to="/docente/grade-activities">Calificar Actividades</Link>
+                    </li>
                 </ul>
             </nav>
 

@@ -82,6 +82,7 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<StudentDashboard />} />
                         <Route path="recordings" element={<Recordings />} />
                         <Route path="advisories" element={<Advisory />} />
+                        <Route path="activities" element={<ActivitySubmission />} />
                     </Routes>
                 </RutaProtegida>
             } />
@@ -93,6 +94,7 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<TeacherDashboard />} />
                         <Route path="recordings" element={<Recordings />} />
                         <Route path="advisories" element={<Advisory />} />
+                        <Route path="grade-activities" element={<GradeActivities />} />
                     </Routes>
                 </RutaProtegida>
             } />
