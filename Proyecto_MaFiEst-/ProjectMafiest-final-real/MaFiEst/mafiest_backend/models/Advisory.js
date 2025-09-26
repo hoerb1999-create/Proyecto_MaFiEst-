@@ -9,17 +9,26 @@ Advisory.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  userId: {
-    type: DataTypes.INTEGER,
+  fullName: {
+    type: DataTypes.STRING,
     allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id',
-    },
   },
-  message: {
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
     type: DataTypes.TEXT,
     allowNull: false,
+  },
+  date: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
   },
 }, {
   sequelize,

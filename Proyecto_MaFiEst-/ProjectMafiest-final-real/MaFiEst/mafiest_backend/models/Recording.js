@@ -3,7 +3,6 @@ const sequelize = require('../utils/db');
 
 class Recording extends Model {}
 
-
 Recording.init({
     id: {
         type: DataTypes.INTEGER,
@@ -26,10 +25,14 @@ Recording.init({
         }
     },
     type: {
-        type: DataTypes.ENUM('general'),
+        type: DataTypes.ENUM('general', 'group'),
         allowNull: false
     },
-    userId: {
+    groupId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    createdBy: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {

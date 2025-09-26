@@ -17,18 +17,18 @@ import Recordings from '../pages/Recordings';
 // Páginas de administrador
 import AdminDashboard from '../pages/administrador/Dashboard';
 import ManageUsers from '../pages/administrador/ManageUsers';
-import ManageGroups from '../pages/administrador/ManageGroups';
+// import ManageGroups from '../pages/administrador/ManageGroups';
 
 // Páginas de estudiante
 import StudentDashboard from '../pages/estudiante/Dashboard';
-import ViewActivities from '../pages/estudiante/ViewActivities';
-import SubmitActivity from '../pages/estudiante/SubmitActivity';
-import ViewSubmissions from '../pages/estudiante/ViewSubmissions';
+// import ViewActivities from '../pages/estudiante/ViewActivities';
+// import SubmitActivity from '../pages/estudiante/SubmitActivity';
+// import ViewSubmissions from '../pages/estudiante/ViewSubmissions';
 
 // Páginas de profesor
 import TeacherDashboard from '../pages/docente/Dashboard';
-import ActivityManagement from '../pages/docente/ActivityManagement';
-import SubmissionReview from '../pages/docente/SubmissionReview';
+// import ActivityManagement from '../pages/docente/ActivityManagement';
+// import SubmissionReview from '../pages/docente/SubmissionReview';
 
 // Páginas de independiente
 import IndependentDashboard from '../pages/independiente/Dashboard';
@@ -69,7 +69,8 @@ const AppRoutes = () => {
                     <Routes>
                         <Route path="dashboard" element={<AdminDashboard />} />
                         <Route path="manage-users" element={<ManageUsers />} />
-                        <Route path="manage-groups" element={<ManageGroups />} />
+                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="advisories" element={<Advisory />} />
                     </Routes>
                 </RutaProtegida>
             } />
@@ -79,11 +80,9 @@ const AppRoutes = () => {
                 <RutaProtegida allowedRoles={['estudiante']}>
                     <Routes>
                         <Route path="dashboard" element={<StudentDashboard />} />
-                        <Route path="activities" element={<ViewActivities />} />
-                        <Route path="activities/:id" element={<SubmitActivity />} />
-                        <Route path="submissions" element={<ViewSubmissions />} />
                         <Route path="recordings" element={<Recordings />} />
                         <Route path="advisories" element={<Advisory />} />
+                        <Route path="activities" element={<ActivitySubmission />} />
                     </Routes>
                 </RutaProtegida>
             } />
@@ -93,10 +92,9 @@ const AppRoutes = () => {
                 <RutaProtegida allowedRoles={['docente']}>
                     <Routes>
                         <Route path="dashboard" element={<TeacherDashboard />} />
-                        <Route path="activities" element={<ActivityManagement />} />
-                        <Route path="submissions" element={<SubmissionReview />} />
                         <Route path="recordings" element={<Recordings />} />
                         <Route path="advisories" element={<Advisory />} />
+                        <Route path="grade-activities" element={<GradeActivities />} />
                     </Routes>
                 </RutaProtegida>
             } />
@@ -108,7 +106,6 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<IndependentDashboard />} />
                         <Route path="recordings" element={<Recordings />} />
                         <Route path="advisories" element={<Advisory />} />
-                        <Route path="contact" element={<Contact />} />
                     </Routes>
                 </RutaProtegida>
             } />
