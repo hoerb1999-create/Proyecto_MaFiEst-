@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form, Modal, Table } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
-import teacherActivityService from '../../services/teacherService';
+import userService from '../../services/userService';
 
 const GradeActivities = () => {
   const { user } = useAuth();

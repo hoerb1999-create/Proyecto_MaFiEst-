@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Button, Form, Modal } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
-import activitySubmissionService from '../../services/activitySubmissionService';
+import activityService from '../../services/activityService';
 
 const ActivitySubmission = () => {
   const { user } = useAuth();
