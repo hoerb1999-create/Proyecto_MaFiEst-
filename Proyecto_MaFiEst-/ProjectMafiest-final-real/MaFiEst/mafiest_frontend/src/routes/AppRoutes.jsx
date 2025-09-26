@@ -12,26 +12,29 @@ import Register from '../pages/RegisterForm';
 import Contact from '../pages/Contact';
 import Advisory from '../pages/Advisory';
 import Profile from '../pages/Profile';
-import Recordings from '../pages/Recordings';
 
 // Páginas de administrador
 import AdminDashboard from '../pages/administrador/Dashboard';
 import ManageUsers from '../pages/administrador/ManageUsers';
 import ManageGroups from '../pages/administrador/ManageGroups';
+import AdminRecordings from '../pages/administrador/Recordings';
 
 // Páginas de estudiante
 import StudentDashboard from '../pages/estudiante/Dashboard';
 import ViewActivities from '../pages/estudiante/ViewActivities';
 import SubmitActivity from '../pages/estudiante/SubmitActivity';
 import ViewSubmissions from '../pages/estudiante/ViewSubmissions';
+import StudentViewRecordings from '../pages/estudiante/ViewRecordings';
 
 // Páginas de profesor
 import TeacherDashboard from '../pages/docente/Dashboard';
 import ActivityManagement from '../pages/docente/ActivityManagement';
 import SubmissionReview from '../pages/docente/SubmissionReview';
+import TeacherRecordings from '../pages/docente/Recordings';
 
 // Páginas de independiente
 import IndependentDashboard from '../pages/independiente/Dashboard';
+import IndependentViewRecordings from '../pages/independiente/ViewRecordings';
 
 // Componente de ruta protegida
 import RutaProtegida from './RutaProtegida';
@@ -61,7 +64,6 @@ const AppRoutes = () => {
             <Route path="/contact" element={<RutaProtegida><Contact /></RutaProtegida>} />
             <Route path="/advisory" element={<RutaProtegida><Advisory /></RutaProtegida>} />
             <Route path="/profile" element={<RutaProtegida><Profile /></RutaProtegida>} />
-            <Route path="/recordings" element={<RutaProtegida><Recordings /></RutaProtegida>} />
 
             {/* Rutas de administrador */}
             <Route path="/admin/*" element={
@@ -70,6 +72,7 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<AdminDashboard />} />
                         <Route path="manage-users" element={<ManageUsers />} />
                         <Route path="manage-groups" element={<ManageGroups />} />
+                        <Route path="recordings" element={<AdminRecordings />} />
                     </Routes>
                 </RutaProtegida>
             } />
@@ -82,7 +85,7 @@ const AppRoutes = () => {
                         <Route path="activities" element={<ViewActivities />} />
                         <Route path="activities/:id" element={<SubmitActivity />} />
                         <Route path="submissions" element={<ViewSubmissions />} />
-                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="recordings" element={<StudentViewRecordings />} />
                         <Route path="advisories" element={<Advisory />} />
                     </Routes>
                 </RutaProtegida>
@@ -95,7 +98,7 @@ const AppRoutes = () => {
                         <Route path="dashboard" element={<TeacherDashboard />} />
                         <Route path="activities" element={<ActivityManagement />} />
                         <Route path="submissions" element={<SubmissionReview />} />
-                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="recordings" element={<TeacherRecordings />} />
                         <Route path="advisories" element={<Advisory />} />
                     </Routes>
                 </RutaProtegida>
@@ -106,7 +109,7 @@ const AppRoutes = () => {
                 <RutaProtegida allowedRoles={['independiente']}>
                     <Routes>
                         <Route path="dashboard" element={<IndependentDashboard />} />
-                        <Route path="recordings" element={<Recordings />} />
+                        <Route path="recordings" element={<IndependentViewRecordings />} />
                         <Route path="advisories" element={<Advisory />} />
                         <Route path="contact" element={<Contact />} />
                     </Routes>

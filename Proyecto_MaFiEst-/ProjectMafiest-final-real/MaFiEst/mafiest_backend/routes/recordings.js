@@ -31,6 +31,22 @@ router.get('/',
     recordingsController.getRecordings
 );
 
+// Obtener grabaciones generales (para administradores)
+router.get('/general',
+    tokenExtractor,
+    userExtractor,
+    allowRoles(['administrador']),
+    recordingsController.getGeneralRecordings
+);
+
+// Obtener grabaciones de un profesor específico
+router.get('/teacher/:teacherId',
+    tokenExtractor,
+    userExtractor,
+    allowRoles(['docente', 'administrador']),
+    recordingsController.getTeacherRecordings
+);
+
 router.put('/:id',
     tokenExtractor,
     userExtractor,

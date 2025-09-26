@@ -4,6 +4,24 @@ const teacherService = require('../services/teacherService');
 const { AppError } = require('../utils/errorHandler');
 
 const recordingsController = {
+    async getGeneralRecordings(req, res, next) {
+        try {
+            const recordings = await recordingService.getGeneralRecordings();
+            res.json(recordings);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    async getTeacherRecordings(req, res, next) {
+        try {
+            const { teacherId } = req.params;
+            const recordings = await recordingService.getTeacherRecordings(teacherId);
+            res.json(recordings);
+        } catch (error) {
+            next(error);
+        }
+    },
     async createRecording(req, res, next) {
         try {
             const { title, description, driveLink, type } = req.body;
@@ -20,11 +38,11 @@ const recordingsController = {
                     break;
 
                 case 'docente':
-                    if (type !== 'general') {
-                        throw new AppError('Los docentes solo pueden crear grabaciones generales', 400);
+                    if (type !== 'class') {
+                        throw new AppError('Los docentes solo pueden crear grabaciones de clase', 400);
                     }
                     recording = await teacherService.createRecording({
-                        title, description, driveLink
+                        title, description, driveLink, type: 'class'
                     }, req.user.id);
                     break;
 
