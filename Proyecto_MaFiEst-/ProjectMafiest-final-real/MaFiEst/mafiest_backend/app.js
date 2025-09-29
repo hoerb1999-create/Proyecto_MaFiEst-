@@ -9,7 +9,7 @@ const userRoutes = require('./routes/users');
 const contactRoutes = require('./routes/contacts');
 const advisoryRoutes = require('./routes/advisories');
 const activityRoutes = require('./routes/activities');
-const activitySubmissionRoutes = require('./routes/activitySubmission');
+const submissionRoutes = require('./routes/submissions');
 const recordingRoutes = require('./routes/recordings');
 
 const app = express();
@@ -30,7 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/advisories', advisoryRoutes);
 app.use('/api/activities', activityRoutes);
-app.use('/api/activities/submissions', activitySubmissionRoutes);
+app.use('/api/submissions', submissionRoutes);
 app.use('/api/recordings', recordingRoutes);
 
 // Health check
