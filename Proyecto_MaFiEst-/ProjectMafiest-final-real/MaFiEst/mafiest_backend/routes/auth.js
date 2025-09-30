@@ -2,8 +2,6 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../controllers/auth');
 
-router.use(express.json());
-
 // Enmascarar email en logs, no imprimir body completo
 router.post('/login', async (req, res) => {
   try {
@@ -35,5 +33,6 @@ router.post('/logout', async (req, res) => {
     res.status(500).json({ message: 'Error interno en /logout' });
   }
 });
+
 
 module.exports = router;
