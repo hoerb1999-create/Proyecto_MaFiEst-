@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const submissionsController = require('../controllers/submissions');
-const { authenticateToken } = require('../utils/middleware');
+const { userExtractor } = require('../utils/middleware');
 
 // Todas las rutas requieren autenticación
-router.use(authenticateToken);
+router.use(userExtractor);
 
 // Middleware para verificar roles
 const allowRoles = (roles) => {
@@ -22,19 +22,19 @@ const allowRoles = (roles) => {
 
 // Rutas de submissions
 router.post('/activity/:activityId/submit',
-    authenticateToken,
+    userExtractor,
     allowRoles(['estudiante']),
     submissionsController.submitActivity
 );
 
 router.get('/:submissionId',
-    authenticateToken,
+    userExtractor,
     allowRoles(['docente', 'estudiante']),
     submissionsController.getSubmissionDetails
 );
 
 router.put('/:submissionId/grade',
-    authenticateToken,
+    userExtractor,
     allowRoles(['docente']),
     submissionsController.gradeSubmission
 );

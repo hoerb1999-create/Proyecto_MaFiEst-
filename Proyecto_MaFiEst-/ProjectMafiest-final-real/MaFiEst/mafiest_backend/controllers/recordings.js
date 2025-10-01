@@ -1,6 +1,6 @@
-const recordingService = require('../services/recordingService');
-const adminService = require('../services/adminService');
-const teacherService = require('../services/teacherService');
+// const recordingService = require('../services/recordingService');
+// const adminService = require('../services/adminService');
+// const teacherService = require('../services/teacherService');
 const { AppError } = require('../utils/errorHandler');
 
 const recordingsController = {

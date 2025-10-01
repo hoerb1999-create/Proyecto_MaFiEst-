@@ -1,5 +1,5 @@
-const userService = require('../services/userService');
-const independentService = require('../services/independentService');
+// const userService = require('../services/userService');
+// const independentService = require('../services/independentService');
 const { AppError } = require('../utils/errorHandler');
 
 const authController = {

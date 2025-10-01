@@ -12,7 +12,7 @@ import Register from '../pages/RegisterForm';
 import Contact from '../pages/Contact';
 import Advisory from '../pages/Advisory';
 import Profile from '../pages/Profile';
-import Recordings from '../pages/Recordings';
+import Recordings from '../pages/administrador/Recordings';
 
 // Páginas de administrador
 import AdminDashboard from '../pages/administrador/Dashboard';

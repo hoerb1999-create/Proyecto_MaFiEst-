@@ -32,6 +32,7 @@ User.hasMany(Submission, { foreignKey: 'studentId' });
 Submission.belongsTo(User, { as: 'student', foreignKey: 'studentId' });
 
 module.exports = {
+    sequelize,
     User,
     Contact,
     Advisory,
